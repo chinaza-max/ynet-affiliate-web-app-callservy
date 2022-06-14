@@ -1,0 +1,212 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="">
+<!--<![endif]-->
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Callservy Affiliate Dashboard</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="apple-touch-icon" href="https://i.imgur.com/QRAUqs9.png">
+    <link rel="shortcut icon" href="https://i.imgur.com/QRAUqs9.png">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.0/normalize.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lykmapipo/themify-icons@0.1.2/css/themify-icons.css">
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/pixeden-stroke-7-icon@1.2.3/pe-icon-7-stroke/dist/pe-icon-7-stroke.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.2.0/css/flag-icon.min.css">
+    <link rel="stylesheet" href="assets/css/cs-skin-elastic.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
+
+    <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/html5shiv/3.7.3/html5shiv.min.js"></script> -->
+</head>
+
+<body class="bg-dark">
+
+    <div class="sufee-login d-flex align-content-center flex-wrap">
+        <div class="container">
+            <div class="login-content">
+
+                <div class="login-form">
+                    <form id="form">
+                        <div class="form-group">
+                            <label>First Name</label>
+                            <input type="text" id="FirstName" class="form-control" placeholder="First Name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Last Name</label>
+                            <input type="text" id="LastName" class="form-control" placeholder="Last Name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email address</label>
+                            <input type="email" id="Email" class="form-control" placeholder="Email" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" id="Password" class="form-control" placeholder="Password" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Phone No</label>
+                            <input type="tel" id="Phone" class="form-control"  min="11"  max="11" placeholder="Phone No" required>
+                        </div>
+                        <div class="form-group">
+                            <label>select bank </label>
+                            <select class="form-select form-control" id="options" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label>Account No</label>
+                            <input type="tel" class="form-control" id="AccountNo"  maxlength="10" placeholder="Account No" required>
+                            <span id="ErrorId" style="color: red;"></span>
+                        </div>
+                        <div class="form-group">
+                            <label>Account Name</label>
+                            <input type="text" class="form-control" id="AccountName" placeholder="" readonly required>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" required> Agree the terms and policy
+                            </label>
+                        </div>
+                        <button type="submit" id="submit" class="btn btn-primary btn-flat m-b-30 m-t-30" disabled>Register</button>
+
+                        <div class="register-link m-t-15 text-center">
+                            <p>Already have account ? <a href="page-login.html"> Sign in</a></p>
+                        </div>
+                        <span id="ErrorId2" style="color: red;"></span>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.4/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <script type="text/javascript">
+        
+        "use strict";
+
+        let bankCode = ""
+        let accountNumber = "";
+        let checkboxStatus = "";
+                
+        $('input:checkbox').change(function(){
+            if($(this).is(':checked')){
+                checkboxStatus="checked"
+                CheckUser(accountNumber, bankCode);
+            } else {
+                CheckUser(accountNumber, bankCode);
+                checkboxStatus=""
+            }
+        });
+
+        $("#AccountNo").change(function (e) {
+            bankCode = $('#options').val()
+            accountNumber = e.target.value
+            CheckUser(accountNumber, bankCode);
+        });
+
+        $("#options").change(function (e) {
+            bankCode = e.target.value
+            CheckUser(accountNumber, bankCode);
+        });
+
+        function CheckUser(accountNumber, bankCode) {
+      
+            if (accountNumber != "") {
+              
+                $("#AccountName").val("Loading......");
+                $.ajax({
+                    dataType: 'json',
+                    url: "https://app.callservy.com/mw?validateAccount",
+                    data:  {
+                        bankCode,
+                        accountNumber
+                    },
+                    success:(data)=>{
+                        if (data.status!="error") {
+                            $("#ErrorId").html('');
+                            $("#AccountName").val(data.data.accountName);
+
+                            if(checkboxStatus=="checked"){
+                                $('#submit').prop('disabled', false);
+                            }
+                            else{
+                                $('#submit').prop('disabled', true);
+                            }
+                        }
+                        else{
+                            $('#submit').prop('disabled', true);
+
+                            $("#ErrorId").html(data.message);
+                            $("#AccountName").val("");
+                        }
+                    }
+                });
+            }
+        }
+
+        $("#submit").on("click", (function(e) {
+            $(this).closest("form").trigger("submit");
+            
+            $("#submit").html('LOADING....');   
+            $('#submit').prop('disabled', true);
+            $.ajax({
+                    dataType: 'json',
+                    url: "https://app.callservy.com/mw?signupAffiliate",
+                    data:  {
+                        email:$("#Email").val(),
+                        password:$("#Password").val(),
+                        firstName:$("#FirstName").val(),
+                        lastName:$("#LastName").val(),
+                        phone:$("#Phone").val(),
+                        bankCode,
+                        accountNumber:accountNumber,
+                        accountName:$("#AccountName").val(),
+                    },
+                    success:(data)=>{
+                        if (data.status!="error") {
+                            $("#ErrorId2").html('');   
+                        }
+                        else{
+                            $("#ErrorId2").html(data.message);
+                            $("#submit").html('Register');   
+                        }
+                    }
+                });
+           
+        }))
+
+        $.getJSON("https://app.callservy.com/mw?listBanks", function (data, status) {
+            if (status == "success" && data.message == "OK") {
+                let option = ''
+                for (let i = 0; i < data.data.length; i++) {
+                    option += `<option value=${data.data[i].bankCode}>${data.data[i].bankName}</option>`
+                    if (i + 1 == data.data.length) {
+                        $("#options").html(option);
+                    }
+                }
+            }
+
+        });
+
+
+    </script>
+
+</body>
+
+</html>
